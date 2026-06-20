@@ -147,16 +147,28 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "SENDING…";
 
-      fetch(endpoint, { method: "POST", mode: "no-cors", body: data })
-        .then(function () {
-          showSuccess([g1, g2, g3].filter(Boolean));
+      function fail() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "SUBMIT";
+        showStatus("Submission failed. Please try again later.", "error");
+      }
+
+      // CORS mode (the form-urlencoded body is a "simple" request, so no preflight).
+      // The endpoint returns Access-Control-Allow-Origin:*, so we can read the real
+      // result and only confirm on a verified write — never a false success.
+      fetch(endpoint, { method: "POST", body: data })
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
         })
-        .catch(function () {
-          // no-cors hides app errors; a thrown error here means a real network failure
-          submitBtn.disabled = false;
-          submitBtn.textContent = "SUBMIT";
-          showStatus("Network error — please try again.", "error");
-        });
+        .then(function (out) {
+          if (out && out.result === "success") {
+            showSuccess([g1, g2, g3].filter(Boolean));
+          } else {
+            fail();
+          }
+        })
+        .catch(fail);
     });
   }
 
