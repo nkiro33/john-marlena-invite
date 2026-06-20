@@ -1,0 +1,39 @@
+# ───────────────── OS / editor junk ─────────────────
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# ───────────────── Tooling (only matters if you add a build later) ─────────────────
+node_modules/
+.env
+.env.local
+npm-debug.log*
+*.log
+
+# ───────────────── Original design exports — reference only, NOT used by the site ─────────────────
+# ~25 MB of source SVGs at the project root. The app loads the files in assets/.
+/P1.svg
+/P1 OI.svg
+/P2.svg
+/P3.svg
+/P4.svg
+/P4 WT.svg
+/P5.svg
+/P5 WT.svg
+
+# Layered envelope source artwork (already derived into assets/env2-*)
+/new/
+
+# ───────────────── Superseded assets — not referenced by index.html ─────────────────
+# (gitignore comments must be on their own line, never inline after a pattern)
+# replaced by env2-flap.png (PNG transforms cleanly in 3-D):
+assets/env2-flap.svg
+# old single-image envelopes (pre-layered, no longer loaded):
+assets/envelope-closed.svg
+assets/envelope-open.svg

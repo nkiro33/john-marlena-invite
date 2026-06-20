@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1c2a4a" />
+  <title>John &amp; Marlena — Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="locked">
+
+  <!-- ====================== ENVELOPE (Page 1) ====================== -->
+  <div id="envelope" class="envelope" role="button" tabindex="0" aria-label="Click the seal to open your invitation">
+    <div class="env-frame">
+      <div class="env-stage">
+        <!-- inner shadow backing, revealed as the flap swings open -->
+        <div class="env-inside" aria-hidden="true"></div>
+        <!-- envelope body / interior (static) -->
+        <img class="env-layer env-body" src="assets/env2-body.svg" alt="" aria-hidden="true" />
+        <!-- the flap's contact shadow (fades as the flap lifts) -->
+        <img class="env-layer env-shadow" src="assets/env2-shadow.svg" alt="" aria-hidden="true" />
+        <!-- hinged top flap + wax seal — folds open in 3-D (PNG: SVGs vanish under 3-D transforms) -->
+        <img class="env-layer env-flap" src="assets/env2-flap.png" alt="Sealed envelope" />
+        <!-- soft glow inviting a tap on the wax seal -->
+        <div class="seal-glow" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="tap-hint">
+      <p>Click the seal to open</p>
+    </div>
+  </div>
+
+  <!-- white flash used during the open transition -->
+  <div id="flash" class="flash" aria-hidden="true"></div>
+
+  <!-- ====================== INVITATION (Pages 2–5) ====================== -->
+  <main id="invite" class="invite" aria-hidden="true">
+
+    <!-- Page 2 — static -->
+    <section class="page" id="page2">
+      <div class="page-wrap">
+        <img class="page-img" data-src="assets/page2.svg" alt="John and Marlena invite you — Sunday 2 August 2026, 5:30 PM" />
+      </div>
+    </section>
+
+    <!-- Page 3 — static -->
+    <section class="page" id="page3">
+      <div class="page-wrap">
+        <img class="page-img" data-src="assets/page3.svg" alt="Wedding dress code" />
+      </div>
+    </section>
+
+    <!-- Page 4 — events + location buttons overlaid on clean image -->
+    <section class="page" id="page4">
+      <div class="page-wrap">
+        <img class="page-img" data-src="assets/page4.svg" alt="Wedding events" />
+        <a class="loc-btn" id="locChurch" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" class="pin" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>
+          <span>LOCATION</span>
+        </a>
+        <a class="loc-btn" id="locVenue" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" class="pin" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>
+          <span>LOCATION</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Page 5 — reservation form overlaid on clean image -->
+    <section class="page" id="page5">
+      <div class="page-wrap">
+        <img class="page-img" data-src="assets/page5.svg" alt="Wedding reservation information" />
+
+        <form id="rsvpForm" autocomplete="off">
+          <!-- Guest 1 (required) -->
+          <div class="field fld-guest1">
+            <input type="text" name="guest1" id="guest1" required placeholder="Guest name" aria-label="Guest name" />
+          </div>
+
+          <!-- Guest 2 (add another) -->
+          <div class="field fld-add1">
+            <button type="button" class="add-btn" data-target="guest2">
+              <span class="plus">+</span> ADD ANOTHER GUEST
+            </button>
+            <input type="text" name="guest2" id="guest2" class="hidden-input" placeholder="Guest name" aria-label="Second guest name" />
+          </div>
+
+          <!-- Guest 3 (not required) -->
+          <div class="field fld-add2">
+            <button type="button" class="add-btn" data-target="guest3">
+              <span class="plus">+</span> ADD ANOTHER GUEST
+            </button>
+            <input type="text" name="guest3" id="guest3" class="hidden-input" placeholder="Guest name (optional)" aria-label="Third guest name" />
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="submit-btn" id="submitBtn">SUBMIT</button>
+        </form>
+
+        <!-- success / error message -->
+        <div class="form-status" id="formStatus" aria-live="polite"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
