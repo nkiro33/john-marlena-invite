@@ -19,8 +19,8 @@ window.CONFIG = {
    * ------------------------------------------------------------------- */
   LOCATIONS: {
     // 5:00 PM — Church of the Blessed Virgin Mary & St. Mina "King Mariot"
-    church: "https://www.google.com/maps/place/Hilton+Alexandria+King's+Ranch/@30.9736169,29.6817699,13.87z/data=!4m9!3m8!1s0x14f58e79d63be9a9:0x8ee7e6584e5e820e!5m2!4m1!1i2!8m2!3d30.9821346!4d29.6927536!16s%2Fg%2F11b7dqk7mk?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D",
+    church: "https://maps.app.goo.gl/gjeSv3Xi74HJcCTR7?g_st=iw",
     // 7:00 PM — Hiltons King Ranch "King Mariot"
-    venue:  "https://www.google.com/maps/place/Hilton+Alexandria+King's+Ranch/@30.9736169,29.6817699,13.87z/data=!4m9!3m8!1s0x14f58e79d63be9a9:0x8ee7e6584e5e820e!5m2!4m1!1i2!8m2!3d30.9821346!4d29.6927536!16s%2Fg%2F11b7dqk7mk?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D"
+    venue:  "https://maps.app.goo.gl/359Q76ifkF5ho2Kk9?g_st=iw"
   }
 };
