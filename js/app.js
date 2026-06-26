@@ -243,7 +243,7 @@
       function fail() {
         submitBtn.disabled = false;
         submitBtn.textContent = "SUBMIT";
-        showStatus("Submission failed. Please try again later.", "error");
+        showStatus("We couldn’t confirm your reservation. Please try again later, or send us a private message.", "error");
       }
 
       // CORS mode (the form-urlencoded body is a "simple" request, so no preflight).

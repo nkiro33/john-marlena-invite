@@ -337,15 +337,22 @@ body.revealed .invite::-webkit-scrollbar{display:none;}
 .fld-add2  { left:12.6%; top:73.3%; width:68%; height:5.2%; }
 .submit-btn{ position:absolute; left:17%; top:82.5%; width:59%; height:6.2%; }
 
-/* status toast */
+/* status toast — floats at the bottom of the screen so it's always visible,
+   even when the page art is taller than the viewport (cover mode) */
 .form-status{
-  position:absolute;left:8%;right:8%;top:92%;
-  text-align:center;font-size:1rem;border-radius:10px;padding:.4em;
-  opacity:0;transition:opacity .3s ease;
+  position:fixed;left:50%;bottom:24px;z-index:75;
+  width:min(86%,420px);
+  transform:translateX(-50%) translateY(8px);
+  text-align:center;line-height:1.4;
+  font-size:clamp(.95rem,3.6vw,1.05rem);
+  border-radius:12px;padding:.7em .9em;
+  box-shadow:0 10px 28px rgba(0,0,0,.20);
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease;
 }
-.form-status.show{opacity:1;}
-.form-status.success{color:#2f6b34;background:rgba(214,240,214,.85);}
-.form-status.error{color:#8a2b2b;background:rgba(245,214,214,.85);}
+.form-status.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.form-status.success{color:#235427;background:rgba(225,244,225,.97);}
+.form-status.error{color:#7e2727;background:rgba(248,224,224,.97);}
 
 /* success overlay after submit — same parchment background as the pages */
 .thankyou{
