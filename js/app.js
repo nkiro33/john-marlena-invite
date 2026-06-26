@@ -15,12 +15,20 @@
     if (venue) venue.href = loc.venue || "#";
   }
 
-  /* ---------- 2. Lazy-load page images ---------- */
+  /* ---------- 2. Swap in the full page images (over the blurred preview) ----------
+     Each image is invisible until it finishes loading, then fades in over its
+     low-quality preview. Full images are usually already cached by preloadFullPages(),
+     so on a good line this is instant; on a poor line the blurred preview shows
+     until the real image arrives. */
   function lazyLoad() {
     var imgs = document.querySelectorAll(".page-img[data-src]");
     imgs.forEach(function (img) {
+      var reveal = function () { img.classList.add("loaded"); };
+      img.addEventListener("load", reveal, { once: true });
+      img.addEventListener("error", reveal, { once: true }); // never leave it blurred forever
       img.src = img.getAttribute("data-src");
       img.removeAttribute("data-src");
+      if (img.complete && img.naturalWidth) reveal();        // cache hit (sync)
     });
   }
 
@@ -42,11 +50,65 @@
     wraps.forEach(function (w) { io.observe(w); });
   }
 
+  /* ---------- 3b. Preload + ready gate ----------
+     The seal can be tapped only once the envelope is fully drawn AND the tiny
+     page previews are in (a second or two). At that moment every full-resolution
+     page starts downloading in the background, so they are ready — or nearly so —
+     by the time a guest taps. A safety timeout guarantees a single stuck asset
+     can never lock anyone out of the invitation. */
+  var ready = false;
+
+  function markReady() {
+    if (ready) return;
+    ready = true;
+    var env = document.getElementById("envelope");
+    if (env) env.classList.remove("env-loading"); // reveal the complete envelope + seal + hint
+    preloadFullPages();                            // begin streaming the big pages in
+  }
+
+  // warm the browser cache with the full-res pages so lazyLoad() is instant on open
+  function preloadFullPages() {
+    document.querySelectorAll(".page-img[data-src]").forEach(function (img) {
+      var pre = new Image();
+      pre.src = img.getAttribute("data-src");
+    });
+  }
+
+  // resolve `done` once every item (an <img> element or a URL string) has settled
+  function trackLoad(list, done) {
+    var remaining = list.length;
+    if (!remaining) { done(); return; }
+    var tick = function () { if (--remaining <= 0) done(); };
+    list.forEach(function (item) {
+      if (typeof item === "string") {
+        var im = new Image();
+        im.onload = im.onerror = tick;
+        im.src = item;
+      } else if (item.complete && item.naturalWidth) {
+        tick();
+      } else {
+        item.addEventListener("load", tick, { once: true });
+        item.addEventListener("error", tick, { once: true });
+      }
+    });
+  }
+
+  function startLoading() {
+    var gate = [].slice.call(document.querySelectorAll(".env-layer")); // body + shadow + flap
+    var previews = ["page2", "page3", "page4", "page5"].map(function (p) {
+      return "assets/" + p + "-lq.jpg";
+    });
+    trackLoad(gate.concat(previews), markReady);
+    setTimeout(markReady, 9000); // safety net: never trap a guest behind a stuck asset
+  }
+
   /* ---------- 4. Envelope opening sequence ---------- */
   var opened = false;
   function openEnvelope() {
-    if (opened) return;
+    if (opened || !ready) return; // ignore taps until the envelope + previews are ready
     opened = true;
+
+    startMusic();                     // the tap is a user gesture, so audio may play with sound
 
     var env = document.getElementById("envelope");
     var flash = document.getElementById("flash");
@@ -96,6 +158,37 @@
     env.addEventListener("click", openEnvelope);
     env.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEnvelope(); }
+    });
+  }
+
+  /* ---------- 4b. Background music ----------
+     Started from openEnvelope() (a genuine tap), then gently faded up. The
+     toggle lets guests mute/unmute at any time. */
+  var MUSIC_VOLUME = 0.7;
+
+  function startMusic() {
+    var audio = document.getElementById("bgMusic");
+    if (!audio) return;
+    audio.volume = 0;                          // fade up from silence (ignored on iOS, which plays at system level)
+    var p = audio.play();
+    if (p && p.catch) p.catch(function () {});  // if a browser still blocks it, the mute button can start it
+    var step = MUSIC_VOLUME / 30;               // ~1.5s fade
+    var fade = setInterval(function () {
+      var v = audio.volume + step;
+      if (v >= MUSIC_VOLUME || audio.muted) { audio.volume = audio.muted ? audio.volume : MUSIC_VOLUME; clearInterval(fade); }
+      else { audio.volume = v; }
+    }, 50);
+  }
+
+  function bindAudio() {
+    var audio = document.getElementById("bgMusic");
+    var btn = document.getElementById("muteBtn");
+    if (!audio || !btn) return;
+    btn.addEventListener("click", function () {
+      audio.muted = !audio.muted;
+      btn.classList.toggle("muted", audio.muted);
+      btn.setAttribute("aria-label", audio.muted ? "Unmute music" : "Mute music");
+      if (!audio.muted && audio.paused) audio.play().catch(function () {}); // resume if it had been blocked
     });
   }
 
@@ -201,5 +294,7 @@
     bindEnvelope();
     bindAddGuest();
     bindForm();
+    bindAudio();      // wire the mute / unmute toggle
+    startLoading();   // preload assets, then unlock the seal when ready
   });
 })();

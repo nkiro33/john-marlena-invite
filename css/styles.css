@@ -67,6 +67,29 @@ img{display:block;}
   object-fit:cover;
 }
 
+/* --- show the envelope only when every layer has loaded (req: full envelope,
+   never one layer then the next on a slow line). The stage stays hidden and a
+   small loader spins until JS clears .env-loading; then all layers fade in as
+   one complete envelope. --- */
+.env-stage{opacity:1;transition:opacity .7s ease;}
+.envelope.env-loading .env-stage{opacity:0;}
+.envelope.env-loading{cursor:default;}
+.envelope.env-loading .tap-hint{opacity:0;}
+
+.env-loader{
+  position:absolute;inset:0;z-index:5;
+  display:flex;align-items:center;justify-content:center;
+  opacity:1;transition:opacity .5s ease;
+}
+.envelope:not(.env-loading) .env-loader{opacity:0;visibility:hidden;}
+.env-spinner{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid rgba(201,168,106,.22);
+  border-top-color:var(--gold-soft);
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
 /* inner-shadow backing seen through the open mouth */
 .env-inside{
   position:absolute;inset:0;
@@ -102,6 +125,7 @@ img{display:block;}
   position:absolute;bottom:6%;left:0;right:0;
   display:flex;justify-content:center;
   padding:0 1rem;
+  transition:opacity .5s ease;
 }
 .tap-hint p{
   margin:0;text-align:center;
@@ -216,10 +240,22 @@ body.revealed .invite::-webkit-scrollbar{display:none;}
     width:min(100vw, calc(100dvh * 1080 / 1920), var(--page-max));
   }
 }
+/* low-quality blurred preview shown instantly; the full image fades in over it */
+.page-lqip{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  filter:blur(7px);
+  transform:scale(1.06);          /* bleed the blurred edges past the frame */
+  transition:opacity .5s ease;
+}
 .page-img{
+  position:absolute;inset:0;      /* layer above the preview, below the overlays */
   width:100%;height:100%;object-fit:cover;
   background:var(--cream);
+  opacity:0;                       /* invisible until the full image loads */
+  transition:opacity .6s ease;
 }
+.page-img.loaded{opacity:1;}
 
 /* ---- entrance animation as each page scrolls in ---- */
 .page-wrap{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
@@ -336,6 +372,27 @@ body.revealed .invite::-webkit-scrollbar{display:none;}
 .thankyou .ty-heart{color:var(--gold-soft);font-size:1.4rem;margin-top:1.4rem;}
 @keyframes fade{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
 body.submitted{overflow:hidden;}
+
+/* ====================== MUTE / UNMUTE TOGGLE ====================== */
+.mute-btn{
+  position:fixed;right:16px;bottom:16px;z-index:70;
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid var(--gold);
+  background:rgba(28,42,74,.55);
+  color:var(--cream);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  cursor:pointer;
+  opacity:0;transform:scale(.9);pointer-events:none;   /* hidden over the envelope */
+  transition:opacity .5s ease,transform .5s ease,background .2s ease;
+}
+body.revealed .mute-btn{opacity:1;transform:none;pointer-events:auto;}
+.mute-btn:hover{background:rgba(28,42,74,.78);}
+.mute-btn:active{transform:scale(.94);}
+.mute-btn svg{width:22px;height:22px;fill:currentColor;}
+.mute-btn .ic-off{display:none;}
+.mute-btn.muted .ic-on{display:none;}
+.mute-btn.muted .ic-off{display:block;}
 
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:opacity .3s ease!important;}

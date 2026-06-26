@@ -13,7 +13,10 @@
 <body class="locked">
 
   <!-- ====================== ENVELOPE (Page 1) ====================== -->
-  <div id="envelope" class="envelope" role="button" tabindex="0" aria-label="Click the seal to open your invitation">
+  <!-- starts in .env-loading: the whole envelope is hidden until every layer
+       (and the lightweight page previews) have loaded, so it never appears in
+       half-rendered pieces on a slow connection. -->
+  <div id="envelope" class="envelope env-loading" role="button" tabindex="0" aria-label="Click the seal to open your invitation">
     <div class="env-frame">
       <div class="env-stage">
         <!-- inner shadow backing, revealed as the flap swings open -->
@@ -28,6 +31,8 @@
         <div class="seal-glow" aria-hidden="true"></div>
       </div>
     </div>
+    <!-- shown only while loading; fades out once the envelope is ready -->
+    <div class="env-loader" aria-hidden="true"><span class="env-spinner"></span></div>
     <div class="tap-hint">
       <p>Click the seal to open</p>
     </div>
@@ -42,6 +47,7 @@
     <!-- Page 2 — static -->
     <section class="page" id="page2">
       <div class="page-wrap">
+        <div class="page-lqip" style="background-image:url(assets/page2-lq.jpg)" aria-hidden="true"></div>
         <img class="page-img" data-src="assets/page2.svg" alt="John and Marlena invite you — Sunday 2 August 2026, 5:30 PM" />
       </div>
     </section>
@@ -49,6 +55,7 @@
     <!-- Page 3 — static -->
     <section class="page" id="page3">
       <div class="page-wrap">
+        <div class="page-lqip" style="background-image:url(assets/page3-lq.jpg)" aria-hidden="true"></div>
         <img class="page-img" data-src="assets/page3.svg" alt="Wedding dress code" />
       </div>
     </section>
@@ -56,6 +63,7 @@
     <!-- Page 4 — events + location buttons overlaid on clean image -->
     <section class="page" id="page4">
       <div class="page-wrap">
+        <div class="page-lqip" style="background-image:url(assets/page4-lq.jpg)" aria-hidden="true"></div>
         <img class="page-img" data-src="assets/page4.svg" alt="Wedding events" />
         <a class="loc-btn" id="locChurch" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24" class="pin" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>
@@ -71,6 +79,7 @@
     <!-- Page 5 — reservation form overlaid on clean image -->
     <section class="page" id="page5">
       <div class="page-wrap">
+        <div class="page-lqip" style="background-image:url(assets/page5-lq.jpg)" aria-hidden="true"></div>
         <img class="page-img" data-src="assets/page5.svg" alt="Wedding reservation information" />
 
         <form id="rsvpForm" autocomplete="off">
@@ -105,6 +114,22 @@
     </section>
 
   </main>
+
+  <!-- background music — starts when the seal is tapped (a real user gesture, so
+       browsers allow it to play with sound). Loops quietly behind the pages. -->
+  <audio id="bgMusic" src="audio/Fly_me_to_the_moon.mp3" loop preload="auto"></audio>
+
+  <!-- mute / unmute toggle — only appears once the invitation is revealed -->
+  <button id="muteBtn" class="mute-btn" type="button" aria-label="Mute music">
+    <svg class="ic-on" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 9v6h4l5 5V4L7 9H3z"/>
+      <path d="M15.5 8.5a4 4 0 010 7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+    <svg class="ic-off" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 9v6h4l5 5V4L7 9H3z"/>
+      <path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </button>
 
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
